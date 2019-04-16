@@ -1,0 +1,5 @@
+/.vs/
+/AspNetCoreServiceBusApi1/bin
+/AspNetCoreServiceBusApi1/obj
+/ServiceBusMessaging/bin
+/ServiceBusMessaging/obj
