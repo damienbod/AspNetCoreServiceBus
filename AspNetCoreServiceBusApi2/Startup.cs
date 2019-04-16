@@ -34,6 +34,7 @@ namespace AspNetCoreServiceBusApi2
 
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
             services.AddHostedService<Worker>();
+            services.AddTransient<IProcessData, ProcessData>();
 
             services.AddSwaggerGen(c =>
             {

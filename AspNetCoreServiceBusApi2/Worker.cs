@@ -25,8 +25,6 @@ namespace AspNetCoreServiceBusApi2
             {
                 _logger.LogInformation($"Worker running at: {DateTime.Now}");
 
-                _serviceBusConsumer.CheckMessages();
-
                 await Task.Delay(1000, stoppingToken);
             }
         }

@@ -9,23 +9,19 @@ namespace ServiceBusMessaging
 {
     public interface IServiceBusConsumer
     {
-        void CheckMessages();
         void RegisterOnMessageHandlerAndReceiveMessages();
     }
 
     public class ServiceBusConsumer : IServiceBusConsumer
     {
+        private readonly IProcessData _processData;
         private readonly QueueClient _queueClient;
         private const string QUEUE_NAME = "simplequeue";
 
-        public ServiceBusConsumer()
+        public ServiceBusConsumer(IProcessData processData)
         {
+            _processData = processData;
             _queueClient = new QueueClient("Endpoint=sb://damienbodservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=16+6eQLwf+yGrFbqvW1/ssr8QojrI3b6wDaRM89hBPU=", QUEUE_NAME);
-        }
-
-        public void CheckMessages()
-        {
-
         }
 
         public void RegisterOnMessageHandlerAndReceiveMessages()
@@ -46,10 +42,10 @@ namespace ServiceBusMessaging
             _queueClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
         }
 
-        public async Task ProcessMessagesAsync(Message message, CancellationToken token)
+        private async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
             var myPayload = JsonConvert.DeserializeObject<MyPayload>(Encoding.UTF8.GetString(message.Body));
-
+            _processData.Process(myPayload);
             await _queueClient.CompleteAsync(message.SystemProperties.LockToken);
         }
 

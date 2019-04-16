@@ -1,10 +1,10 @@
-﻿using ServiceBusMessaging;
+﻿using AspNetCoreServiceBusApi2.Model;
 using System.Collections.Generic;
 
 namespace AspNetCoreServiceBusApi2
 {
-    public class DataServiceSimi
+    public static class DataServiceSimi
     {
-        public static readonly List<MyPayload> data = new List<MyPayload>();
+        public static readonly List<Payload> Data = new List<Payload>();
     }
 }

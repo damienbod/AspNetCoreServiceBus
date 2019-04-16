@@ -15,7 +15,7 @@ namespace AspNetCoreServiceBusApi2.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Payload>> Get()
         {
-            return Ok(DataServiceSimi.data);
+            return Ok(DataServiceSimi.Data);
         }
 
         [HttpGet("{name}")]
@@ -29,7 +29,7 @@ namespace AspNetCoreServiceBusApi2.Controllers
                 return BadRequest();
             }
 
-            var result = DataServiceSimi.data.Where(d => d.Name == name);
+            var result = DataServiceSimi.Data.Where(d => d.Name == name);
 
             if (result == null)
             {
