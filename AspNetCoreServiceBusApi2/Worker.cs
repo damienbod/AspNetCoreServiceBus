@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace AspNetCoreServiceBusApi1
+namespace AspNetCoreServiceBusApi2
 {
     public class Worker : BackgroundService
     {

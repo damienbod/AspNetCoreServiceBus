@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using ServiceBusMessaging;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace AspNetCoreServiceBusApi1
+namespace AspNetCoreServiceBusApi2
 {
     public class Startup
     {
@@ -32,6 +32,7 @@ namespace AspNetCoreServiceBusApi1
             services.AddMvc()
                 .AddNewtonsoftJson();
 
+            services.AddHostedService<Worker>();
             services.AddScoped<ServiceBusSender>();
 
             services.AddSwaggerGen(c =>

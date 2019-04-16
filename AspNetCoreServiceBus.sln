@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreServiceBusApi1", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusMessaging", "ServiceBusMessaging\ServiceBusMessaging.csproj", "{DE933DE9-731B-4EAD-88A4-62533595A278}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreServiceBusApi2", "AspNetCoreServiceBusApi2\AspNetCoreServiceBusApi2.csproj", "{B0948B3C-3F48-43B1-BB34-56FEF97466EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DE933DE9-731B-4EAD-88A4-62533595A278}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE933DE9-731B-4EAD-88A4-62533595A278}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE933DE9-731B-4EAD-88A4-62533595A278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0948B3C-3F48-43B1-BB34-56FEF97466EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0948B3C-3F48-43B1-BB34-56FEF97466EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0948B3C-3F48-43B1-BB34-56FEF97466EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0948B3C-3F48-43B1-BB34-56FEF97466EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
