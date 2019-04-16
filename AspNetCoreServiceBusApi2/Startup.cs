@@ -32,8 +32,8 @@ namespace AspNetCoreServiceBusApi2
             services.AddMvc()
                 .AddNewtonsoftJson();
 
+            services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
             services.AddHostedService<Worker>();
-            services.AddScoped<ServiceBusSender>();
 
             services.AddSwaggerGen(c =>
             {
@@ -66,7 +66,7 @@ namespace AspNetCoreServiceBusApi2
                 routes.MapControllers();
             });
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
