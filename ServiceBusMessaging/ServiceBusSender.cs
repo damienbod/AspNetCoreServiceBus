@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,11 +9,13 @@ namespace ServiceBusMessaging
     public class ServiceBusSender
     {
         private readonly QueueClient _queueClient;
+        private readonly IConfiguration _configuration;
         private const string QUEUE_NAME = "simplequeue";
 
-        public ServiceBusSender()
+        public ServiceBusSender(IConfiguration configuration)
         {
-            _queueClient = new QueueClient("Endpoint=sb://damienbodservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=16+6eQLwf+yGrFbqvW1/ssr8QojrI3b6wDaRM89hBPU=", QUEUE_NAME);
+            _configuration = configuration;
+            _queueClient = new QueueClient(_configuration.GetConnectionString("ServiceBusConnectionString"), QUEUE_NAME);
         }
         
         public async Task SendMessage(MyPayload payload)
