@@ -24,7 +24,6 @@ namespace AspNetCoreServiceBusApi2
                 .AddNewtonsoftJson();
 
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
-            services.AddHostedService<Worker>();
             services.AddTransient<IProcessData, ProcessData>();
 
             services.AddSwaggerGen(c =>
@@ -66,6 +65,9 @@ namespace AspNetCoreServiceBusApi2
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Payload Management API V1");
             });
+
+            var bus = app.ApplicationServices.GetService<IServiceBusConsumer>();
+            bus.RegisterOnMessageHandlerAndReceiveMessages();
         }
     }
 }

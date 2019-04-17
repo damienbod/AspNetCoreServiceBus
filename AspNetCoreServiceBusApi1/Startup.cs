@@ -39,7 +39,7 @@ namespace AspNetCoreServiceBusApi1
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Payload API",
+                    Title = "Payload View API",
                 });
             });
         }

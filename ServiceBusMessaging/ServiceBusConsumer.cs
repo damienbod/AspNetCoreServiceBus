@@ -10,6 +10,7 @@ namespace ServiceBusMessaging
     public interface IServiceBusConsumer
     {
         void RegisterOnMessageHandlerAndReceiveMessages();
+        Task CloseQueueAsync();
     }
 
     public class ServiceBusConsumer : IServiceBusConsumer
@@ -58,6 +59,11 @@ namespace ServiceBusMessaging
             Console.WriteLine($"- Entity Path: {context.EntityPath}");
             Console.WriteLine($"- Executing Action: {context.Action}");
             return Task.CompletedTask;
+        }
+
+        public async Task CloseQueueAsync()
+        {
+            await _queueClient.CloseAsync();
         }
     }
 }
