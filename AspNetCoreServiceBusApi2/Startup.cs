@@ -52,12 +52,15 @@ namespace AspNetCoreServiceBusApi2
             app.UseStaticFiles();
             app.UseHttpsRedirection();
 
-            app.UseRouting(routes =>
-            {
-                routes.MapControllers();
-            });
+            app.UseRouting();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
+            app.UseCors();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
