@@ -72,6 +72,9 @@ namespace AspNetCoreServiceBusApi2
 
             var bus = app.ApplicationServices.GetService<IServiceBusConsumer>();
             bus.RegisterOnMessageHandlerAndReceiveMessages();
+
+            var busSubscription = app.ApplicationServices.GetService<IServiceBusTopicSubscription>();
+            busSubscription.RegisterOnMessageHandlerAndReceiveMessages();
         }
     }
 }
