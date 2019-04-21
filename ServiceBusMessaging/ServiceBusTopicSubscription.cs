@@ -25,7 +25,7 @@ namespace ServiceBusMessaging
 
         public ServiceBusTopicSubscription(IProcessData processData, 
             IConfiguration configuration, 
-            ILogger<ServiceBusConsumer> logger)
+            ILogger<ServiceBusTopicSubscription> logger)
         {
             _processData = processData;
             _configuration = configuration;

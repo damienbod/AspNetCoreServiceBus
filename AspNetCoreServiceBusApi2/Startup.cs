@@ -24,6 +24,7 @@ namespace AspNetCoreServiceBusApi2
                 .AddNewtonsoftJson();
 
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
+            services.AddSingleton<IServiceBusTopicSubscription, ServiceBusTopicSubscription>();
             services.AddTransient<IProcessData, ProcessData>();
 
             services.AddSwaggerGen(c =>
