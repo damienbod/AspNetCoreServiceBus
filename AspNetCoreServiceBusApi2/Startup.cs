@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ServiceBusMessaging;
+using System.Threading.Tasks;
 
 namespace AspNetCoreServiceBusApi2
 {
@@ -37,7 +38,6 @@ namespace AspNetCoreServiceBusApi2
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -74,7 +74,7 @@ namespace AspNetCoreServiceBusApi2
             bus.RegisterOnMessageHandlerAndReceiveMessages();
 
             var busSubscription = app.ApplicationServices.GetService<IServiceBusTopicSubscription>();
-            busSubscription.RegisterOnMessageHandlerAndReceiveMessages();
+            busSubscription.PrepareFiltersAndHandleMessages().GetAwaiter().GetResult();
         }
     }
 }

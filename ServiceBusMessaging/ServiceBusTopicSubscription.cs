@@ -11,7 +11,7 @@ namespace ServiceBusMessaging
 {
     public interface IServiceBusTopicSubscription
     {
-        void RegisterOnMessageHandlerAndReceiveMessages();
+        Task PrepareFiltersAndHandleMessages();
         Task CloseQueueAsync();
     }
 
@@ -36,19 +36,13 @@ namespace ServiceBusMessaging
                 _configuration.GetConnectionString("ServiceBusConnectionString"), 
                 TOPIC_PATH, 
                 SUBSCRIPTION_NAME);
-
-            RemoveDefaultFiltersAddFilters().GetAwaiter().GetResult();
         }
 
-        private async Task RemoveDefaultFiltersAddFilters()
+        public async Task PrepareFiltersAndHandleMessages()
         {
-            await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
-            var filter = new SqlFilter("goals > 7");
-            await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
-        }
+            await RemoveDefaultFilters();
+            await AddFilters();
 
-        public void RegisterOnMessageHandlerAndReceiveMessages()
-        {
             var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
             {
                 MaxConcurrentCalls = 1,
@@ -56,6 +50,31 @@ namespace ServiceBusMessaging
             };
 
             _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
+        }
+
+        private async Task RemoveDefaultFilters()
+        {
+            try
+            {
+                await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private async Task AddFilters()
+        {
+            try
+            {
+                var filter = new SqlFilter("goals > 7");
+                await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         private async Task ProcessMessagesAsync(Message message, CancellationToken token)
