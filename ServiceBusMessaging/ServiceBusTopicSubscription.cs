@@ -13,7 +13,7 @@ namespace ServiceBusMessaging
     public interface IServiceBusTopicSubscription
     {
         Task PrepareFiltersAndHandleMessages();
-        Task CloseQueueAsync();
+        Task CloseSubscriptionClientAsync();
     }
 
     public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
@@ -109,7 +109,7 @@ namespace ServiceBusMessaging
             return Task.CompletedTask;
         }
 
-        public async Task CloseQueueAsync()
+        public async Task CloseSubscriptionClientAsync()
         {
             await _subscriptionClient.CloseAsync();
         }
