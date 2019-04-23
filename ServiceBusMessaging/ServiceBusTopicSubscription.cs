@@ -35,6 +35,9 @@ namespace ServiceBusMessaging
                 _configuration.GetConnectionString("ServiceBusConnectionString"), 
                 TOPIC_PATH, 
                 SUBSCRIPTION_NAME);
+
+            var filter = new SqlFilter("goals > 7");
+            _subscriptionClient.AddRuleAsync("Goals greater than 7", filter);
         }
 
         public void RegisterOnMessageHandlerAndReceiveMessages()
