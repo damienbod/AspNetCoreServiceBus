@@ -37,34 +37,14 @@ namespace ServiceBusMessaging
                 TOPIC_PATH, 
                 SUBSCRIPTION_NAME);
 
-            RemoveDefaultFilters().GetAwaiter().GetResult();
-            AddFilters().GetAwaiter().GetResult();
+            RemoveDefaultFiltersAddFilters().GetAwaiter().GetResult();
         }
 
-        private async Task RemoveDefaultFilters()
+        private async Task RemoveDefaultFiltersAddFilters()
         {
-            try
-            {
-                   await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
-                   //await _subscriptionClient.CloseAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
-
-        private async Task AddFilters()
-        {
-            try
-            {
-                var filter = new SqlFilter("goals > 7");
-                await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+            await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+            var filter = new SqlFilter("goals > 7");
+            await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
         }
 
         public void RegisterOnMessageHandlerAndReceiveMessages()
