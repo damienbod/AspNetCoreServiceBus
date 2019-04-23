@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace FunctionService3
 {
-    public static class Function1
+    public static class SubscriptionClientFunction
     {
         [FunctionName("SubscriptionClientFunction")]
         public static void Run([ServiceBusTrigger(
