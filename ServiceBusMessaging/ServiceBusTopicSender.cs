@@ -30,6 +30,7 @@ namespace ServiceBusMessaging
         {
             string data = JsonConvert.SerializeObject(payload);
             Message message = new Message(Encoding.UTF8.GetBytes(data));
+            message.UserProperties.Add("goals", payload.Goals);
 
             try
             {

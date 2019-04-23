@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,8 +37,34 @@ namespace ServiceBusMessaging
                 TOPIC_PATH, 
                 SUBSCRIPTION_NAME);
 
-            var filter = new SqlFilter("goals > 7");
-            _subscriptionClient.AddRuleAsync("Goals greater than 7", filter);
+            RemoveDefaultFilters().GetAwaiter().GetResult();
+            AddFilters().GetAwaiter().GetResult();
+        }
+
+        private async Task RemoveDefaultFilters()
+        {
+            try
+            {
+                   await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+                   //await _subscriptionClient.CloseAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private async Task AddFilters()
+        {
+            try
+            {
+                var filter = new SqlFilter("goals > 7");
+                await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public void RegisterOnMessageHandlerAndReceiveMessages()
@@ -45,7 +72,7 @@ namespace ServiceBusMessaging
             var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
             {
                 MaxConcurrentCalls = 1,
-                AutoComplete = false
+                AutoComplete = false,
             };
 
             _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
