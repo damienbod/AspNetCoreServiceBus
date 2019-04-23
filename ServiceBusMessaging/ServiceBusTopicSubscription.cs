@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,11 +57,19 @@ namespace ServiceBusMessaging
         {
             try
             {
-                await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+                var rules = await _subscriptionClient.GetRulesAsync();
+                foreach(var rule in rules)
+                {
+                    if(rule.Name == RuleDescription.DefaultRuleName)
+                    {
+                        await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+                    }
+                }
+                
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogWarning(ex.ToString());
             }
         }
 
@@ -68,12 +77,16 @@ namespace ServiceBusMessaging
         {
             try
             {
-                var filter = new SqlFilter("goals > 7");
-                await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+                var rules = await _subscriptionClient.GetRulesAsync();
+                if(!rules.Any(r => r.Name == "GoalsGreaterThanSeven"))
+                {
+                    var filter = new SqlFilter("goals > 7");
+                    await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogWarning(ex.ToString());
             }
         }
 
