@@ -17,3 +17,5 @@ https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/mult
 https://www.nuget.org/packages/Microsoft.Azure.ServiceBus
 
 https://www.planetgeek.ch/2019/01/07/azure-service-bus-topologies/
+
+https://connectedcircuits.blog/2019/04/24/always-subscribe-to-dead-lettered-messages-in-an-azure-service-bus/
