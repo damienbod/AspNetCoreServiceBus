@@ -24,6 +24,7 @@ namespace AspNetCoreServiceBusApi2
                 .AddNewtonsoftJson();
 
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
+            services.AddSingleton<IServiceBusTopicSubscription, ServiceBusTopicSubscription>();
             services.AddTransient<IProcessData, ProcessData>();
 
             services.AddSwaggerGen(c =>
@@ -71,6 +72,9 @@ namespace AspNetCoreServiceBusApi2
 
             var bus = app.ApplicationServices.GetService<IServiceBusConsumer>();
             bus.RegisterOnMessageHandlerAndReceiveMessages();
+
+            var busSubscription = app.ApplicationServices.GetService<IServiceBusTopicSubscription>();
+            busSubscription.RegisterOnMessageHandlerAndReceiveMessages();
         }
     }
 }

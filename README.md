@@ -3,7 +3,7 @@
 
 <ul>
 	<li><a href="https://damienbod.com/2019/04/23/using-azure-service-bus-queues-with-asp-net-core-services/">Using Azure Service Bus Queues with ASP.NET Core Services</a></li>
-
+	<li>Using Azure Service Bus Topics in ASP.NET Core</li>
 </ul>
 
 ## Links

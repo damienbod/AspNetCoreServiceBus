@@ -33,6 +33,7 @@ namespace AspNetCoreServiceBusApi1
                 .AddNewtonsoftJson();
 
             services.AddScoped<ServiceBusSender>();
+            services.AddScoped<ServiceBusTopicSender>();
 
             services.AddSwaggerGen(c =>
             {
