@@ -65,7 +65,6 @@ namespace ServiceBusMessaging
                         await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
                     }
                 }
-                
             }
             catch (Exception ex)
             {
