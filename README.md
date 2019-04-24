@@ -15,3 +15,5 @@ https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-
 https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/multi-container-microservice-net-applications/integration-event-based-microservice-communications
 
 https://www.nuget.org/packages/Microsoft.Azure.ServiceBus
+
+https://www.planetgeek.ch/2019/01/07/azure-service-bus-topologies/
