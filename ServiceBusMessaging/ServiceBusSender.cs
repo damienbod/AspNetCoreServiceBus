@@ -25,6 +25,5 @@ namespace ServiceBusMessaging
 
             await _queueClient.SendAsync(message);
         }
-        
     }
 }

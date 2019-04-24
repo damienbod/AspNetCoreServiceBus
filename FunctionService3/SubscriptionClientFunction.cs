@@ -15,7 +15,6 @@ namespace FunctionService3
             log.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
 
             var payload = JsonConvert.DeserializeObject<MyPayload>(mySbMsg);
-
         }
     }
 }

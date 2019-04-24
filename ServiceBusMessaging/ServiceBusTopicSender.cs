@@ -41,6 +41,5 @@ namespace ServiceBusMessaging
                 _logger.LogError(e.Message);
             }
         }
-        
     }
 }
