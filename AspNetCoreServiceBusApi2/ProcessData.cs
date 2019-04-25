@@ -1,6 +1,7 @@
 ﻿using AspNetCoreServiceBusApi2.Model;
 using ServiceBusMessaging;
 using System;
+using System.Threading.Tasks;
 
 namespace AspNetCoreServiceBusApi2
 {
@@ -12,7 +13,7 @@ namespace AspNetCoreServiceBusApi2
         {
             _payloadMessageContext = payloadMessageContext;
         }
-        public void Process(MyPayload myPayload)
+        public async Task Process(MyPayload myPayload)
         {
             _payloadMessageContext.AddAsync(new Payload
             {
@@ -20,6 +21,8 @@ namespace AspNetCoreServiceBusApi2
                 Goals = myPayload.Goals,
                 Created = DateTime.UtcNow
             });
+
+            await _payloadMessageContext.SaveChangesAsync();
         }
     }
 }
