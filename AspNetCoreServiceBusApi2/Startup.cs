@@ -1,5 +1,7 @@
+using AspNetCoreServiceBusApi2.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +22,15 @@ namespace AspNetCoreServiceBusApi2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().AddNewtonsoftJson();
+
+            var connection = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<PayloadContext>(options =>
+                options.UseSqlite(connection));
+
+            services.AddDbContext<PayloadMessageContext>(options =>
+                options.UseSqlite(connection), 
+                ServiceLifetime.Singleton);
 
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
             services.AddSingleton<IServiceBusTopicSubscription, ServiceBusTopicSubscription>();

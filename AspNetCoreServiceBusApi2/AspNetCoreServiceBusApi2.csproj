@@ -19,4 +19,10 @@
     <ProjectReference Include="..\ServiceBusMessaging\ServiceBusMessaging.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="payloads.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -20,23 +20,23 @@ namespace AspNetCoreServiceBusApi2.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<Payload>>> Get()
+        public ActionResult<List<Payload>> Get()
         {
-            return Ok(await _context.Payloads.ToListAsync());
+            return Ok(_context.Payloads.ToList());
         }
 
         [HttpGet("{name}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Payload>> Get(string name)
+        public ActionResult<Payload> Get(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 return BadRequest();
             }
 
-            var result = await _context.Payloads.FirstorDefaultAsync(d => d.Name == name);
+            var result = _context.Payloads.FirstOrDefault(d => d.Name == name);
 
             if (result == null)
             {
