@@ -23,7 +23,7 @@ namespace AspNetCoreServiceBusApi2
 
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
             services.AddSingleton<IServiceBusTopicSubscription, ServiceBusTopicSubscription>();
-            services.AddTransient<IProcessData, ProcessData>();
+            services.AddSingleton<IProcessData, ProcessData>();
 
             services.AddSwaggerGen(c =>
             {
