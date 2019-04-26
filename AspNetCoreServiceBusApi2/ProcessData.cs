@@ -15,7 +15,7 @@ namespace AspNetCoreServiceBusApi2
         }
         public async Task Process(MyPayload myPayload)
         {
-            _payloadMessageContext.AddAsync(new Payload
+            await _payloadMessageContext.AddAsync(new Payload
             {
                 Name = myPayload.Name,
                 Goals = myPayload.Goals,
