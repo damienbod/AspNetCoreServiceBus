@@ -10,11 +10,11 @@ namespace FunctionService3
         public static void Run([ServiceBusTrigger(
             "mytopic", 
             "functionsubscription",
-            Connection = "ServiceBusConnectionString")]string mySbMsg, ILogger log)
+            Connection = "ServiceBusConnectionString")]string message, ILogger log)
         {
-            log.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
+            log.LogInformation($"C# ServiceBus topic trigger function processed message: {message}");
 
-            var payload = JsonConvert.DeserializeObject<MyPayload>(mySbMsg);
+            var payload = JsonConvert.DeserializeObject<MyPayload>(message);
         }
     }
 }
