@@ -38,6 +38,5 @@ namespace AspNetCoreServiceBusApi2.Controllers
 
             return Ok(result);
         }
-
     }
 }

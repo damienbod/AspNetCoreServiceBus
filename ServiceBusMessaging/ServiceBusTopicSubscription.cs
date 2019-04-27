@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,8 +12,8 @@ namespace ServiceBusMessaging
 {
     public interface IServiceBusTopicSubscription
     {
-        void RegisterOnMessageHandlerAndReceiveMessages();
-        Task CloseQueueAsync();
+        Task PrepareFiltersAndHandleMessages();
+        Task CloseSubscriptionClientAsync();
     }
 
     public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
@@ -37,15 +39,54 @@ namespace ServiceBusMessaging
                 SUBSCRIPTION_NAME);
         }
 
-        public void RegisterOnMessageHandlerAndReceiveMessages()
+        public async Task PrepareFiltersAndHandleMessages()
         {
+            await RemoveDefaultFilters();
+            await AddFilters();
+
             var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
             {
                 MaxConcurrentCalls = 1,
-                AutoComplete = false
+                AutoComplete = false,
             };
 
             _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
+        }
+
+        private async Task RemoveDefaultFilters()
+        {
+            try
+            {
+                var rules = await _subscriptionClient.GetRulesAsync();
+                foreach(var rule in rules)
+                {
+                    if(rule.Name == RuleDescription.DefaultRuleName)
+                    {
+                        await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.ToString());
+            }
+        }
+
+        private async Task AddFilters()
+        {
+            try
+            {
+                var rules = await _subscriptionClient.GetRulesAsync();
+                if(!rules.Any(r => r.Name == "GoalsGreaterThanSeven"))
+                {
+                    var filter = new SqlFilter("goals > 7");
+                    await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.ToString());
+            }
         }
 
         private async Task ProcessMessagesAsync(Message message, CancellationToken token)
@@ -67,7 +108,7 @@ namespace ServiceBusMessaging
             return Task.CompletedTask;
         }
 
-        public async Task CloseQueueAsync()
+        public async Task CloseSubscriptionClientAsync()
         {
             await _subscriptionClient.CloseAsync();
         }

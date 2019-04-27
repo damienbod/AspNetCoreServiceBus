@@ -1,4 +1,4 @@
-﻿namespace ServiceBusMessaging
+﻿namespace FunctionService3
 {
     public class MyPayload
     {
