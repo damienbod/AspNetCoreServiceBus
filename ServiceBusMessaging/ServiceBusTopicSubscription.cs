@@ -92,7 +92,7 @@ namespace ServiceBusMessaging
         private async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
             var myPayload = JsonConvert.DeserializeObject<MyPayload>(Encoding.UTF8.GetString(message.Body));
-            _processData.Process(myPayload);
+            await _processData.Process(myPayload);
             await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
         }
 
