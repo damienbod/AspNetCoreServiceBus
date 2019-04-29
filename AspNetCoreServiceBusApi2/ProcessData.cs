@@ -1,4 +1,5 @@
 ﻿using AspNetCoreServiceBusApi2.Model;
+using Microsoft.Extensions.Configuration;
 using ServiceBusMessaging;
 using System;
 using System.Threading.Tasks;
@@ -7,22 +8,27 @@ namespace AspNetCoreServiceBusApi2
 {
     public class ProcessData : IProcessData
     {
-        private readonly PayloadMessageContext _payloadMessageContext;
+        private IConfiguration _configuration;
 
-        public ProcessData(PayloadMessageContext payloadMessageContext)
+        public ProcessData(IConfiguration configuration)
         {
-            _payloadMessageContext = payloadMessageContext;
+            _configuration = configuration;
         }
         public async Task Process(MyPayload myPayload)
         {
-            await _payloadMessageContext.AddAsync(new Payload
+            using (var payloadMessageContext = 
+                new PayloadMessageContext(
+                    _configuration.GetConnectionString("DefaultConnection")))
             {
-                Name = myPayload.Name,
-                Goals = myPayload.Goals,
-                Created = DateTime.UtcNow
-            });
+                await payloadMessageContext.AddAsync(new Payload
+                {
+                    Name = myPayload.Name,
+                    Goals = myPayload.Goals,
+                    Created = DateTime.UtcNow
+                });
 
-            await _payloadMessageContext.SaveChangesAsync();
+                await payloadMessageContext.SaveChangesAsync();
+            }
         }
     }
 }

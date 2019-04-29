@@ -28,10 +28,6 @@ namespace AspNetCoreServiceBusApi2
             services.AddDbContext<PayloadContext>(options =>
                 options.UseSqlite(connection));
 
-            services.AddDbContext<PayloadMessageContext>(options =>
-                options.UseSqlite(connection), 
-                ServiceLifetime.Singleton);
-
             services.AddSingleton<IServiceBusConsumer, ServiceBusConsumer>();
             services.AddSingleton<IServiceBusTopicSubscription, ServiceBusTopicSubscription>();
             services.AddSingleton<IProcessData, ProcessData>();
