@@ -6,6 +6,8 @@ namespace AspNetCoreServiceBusApi2.Model
     {
         private string _connectionString;
 
+        public DbSet<Payload> Payloads { get; set; }
+
         public PayloadMessageContext(string connectionString)
         {
             _connectionString = connectionString;
@@ -16,8 +18,6 @@ namespace AspNetCoreServiceBusApi2.Model
             optionsBuilder.UseSqlite(_connectionString);
         }
 
-        public DbSet<Payload> Payloads { get; set; }
-      
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Payload>().Property(n => n.Id).ValueGeneratedOnAdd();
