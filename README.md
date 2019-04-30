@@ -25,3 +25,5 @@ https://connectedcircuits.blog/2019/04/24/always-subscribe-to-dead-lettered-mess
 https://www.tomfaltesek.com/azure-functions-local-settings-json-and-source-control/
 
 https://www.ben-morris.com/optimizing-performance-of-the-azure-service-bus-net-standard-sdk/
+
+https://ml-software.ch/posts/stripe-api-with-asp-net-core-part-3
