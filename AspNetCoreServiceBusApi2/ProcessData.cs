@@ -1,17 +1,34 @@
 ﻿using AspNetCoreServiceBusApi2.Model;
+using Microsoft.Extensions.Configuration;
 using ServiceBusMessaging;
+using System;
+using System.Threading.Tasks;
 
 namespace AspNetCoreServiceBusApi2
 {
     public class ProcessData : IProcessData
     {
-        public void Process(MyPayload myPayload)
+        private IConfiguration _configuration;
+
+        public ProcessData(IConfiguration configuration)
         {
-            DataServiceSimi.Data.Add(new Payload
+            _configuration = configuration;
+        }
+        public async Task Process(MyPayload myPayload)
+        {
+            using (var payloadMessageContext = 
+                new PayloadMessageContext(
+                    _configuration.GetConnectionString("DefaultConnection")))
             {
-                Name = myPayload.Name,
-                Goals = myPayload.Goals
-            });
+                await payloadMessageContext.AddAsync(new Payload
+                {
+                    Name = myPayload.Name,
+                    Goals = myPayload.Goals,
+                    Created = DateTime.UtcNow
+                });
+
+                await payloadMessageContext.SaveChangesAsync();
+            }
         }
     }
 }

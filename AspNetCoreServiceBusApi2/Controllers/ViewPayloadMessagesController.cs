@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AspNetCoreServiceBusApi2.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +11,18 @@ namespace AspNetCoreServiceBusApi2.Controllers
     [ApiController]
     public class ViewPayloadMessagesController : Controller
     {
+        private readonly PayloadContext _context;
+
+        public ViewPayloadMessagesController(PayloadContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Payload>> Get()
         {
-            return Ok(DataServiceSimi.Data);
+            return Ok(_context.Payloads.ToList());
         }
 
         [HttpGet("{name}")]
@@ -29,7 +36,7 @@ namespace AspNetCoreServiceBusApi2.Controllers
                 return BadRequest();
             }
 
-            var result = DataServiceSimi.Data.Where(d => d.Name == name);
+            var result = _context.Payloads.FirstOrDefault(d => d.Name == name);
 
             if (result == null)
             {
