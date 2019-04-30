@@ -28,3 +28,5 @@ https://www.tomfaltesek.com/azure-functions-local-settings-json-and-source-contr
 https://www.ben-morris.com/optimizing-performance-of-the-azure-service-bus-net-standard-sdk/
 
 https://ml-software.ch/posts/stripe-api-with-asp-net-core-part-3
+
+https://www.serverless360.com/blog/auto-forwarding-a-hidden-gem-of-service-bus
