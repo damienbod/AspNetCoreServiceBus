@@ -6,6 +6,7 @@
 	<li><a href="https://damienbod.com/2019/04/24/using-azure-service-bus-topics-in-asp-net-core/">Using Azure Service Bus Topics in ASP.NET Core</a></li>
 	<li><a href="https://damienbod.com/2019/04/27/using-azure-service-bus-topics-subscription-filters-in-asp-net-core/">Using Azure Service Bus Topics Subscription Filters in ASP.NET Core</a></li>
 	<li><a href="https://damienbod.com/2019/04/30/using-ef-core-to-process-azure-service-messages-in-asp-net-core/">Using Entity Framework Core to process Azure Service Messages in ASP.NET Core</a></li>
+	<li><a href="https://damienbod.com/2019/05/03/using-an-azure-service-bus-topic-subscription-in-an-azure-function/">Using an Azure Service Bus Topic Subscription in an Azure Function</a></li>
 
 </ul>
 
