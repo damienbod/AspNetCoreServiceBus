@@ -10,6 +10,11 @@
 
 </ul>
 
+
+## History
+
+2019-12-08 Updated to .NET Core 3.1
+
 ## Links
 
 https://docs.microsoft.com/en-us/azure/service-bus-messaging/
