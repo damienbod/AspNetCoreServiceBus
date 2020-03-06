@@ -10,6 +10,7 @@ namespace FunctionService3
         [FunctionName("MyQueueFunction")]
         public static void Run([ServiceBusTrigger("myqueue", Connection = "ServiceBusConnectionString")]string myQueueItem, ILogger log)
         {
+            //throw new Exception("Cannot not process for some reason");
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
         }
     }
