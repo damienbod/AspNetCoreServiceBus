@@ -7,11 +7,14 @@
 	<li><a href="https://damienbod.com/2019/04/27/using-azure-service-bus-topics-subscription-filters-in-asp-net-core/">Using Azure Service Bus Topics Subscription Filters in ASP.NET Core</a></li>
 	<li><a href="https://damienbod.com/2019/04/30/using-ef-core-to-process-azure-service-messages-in-asp-net-core/">Using Entity Framework Core to process Azure Service Messages in ASP.NET Core</a></li>
 	<li><a href="https://damienbod.com/2019/05/03/using-an-azure-service-bus-topic-subscription-in-an-azure-function/">Using an Azure Service Bus Topic Subscription in an Azure Function</a></li>
+	<li>Using Azure Service Bus with restricted access</li>
 
 </ul>
 
 
 ## History
+
+2020-03-06 Added restricted access example
 
 2019-12-08 Updated to .NET Core 3.1
 
@@ -36,3 +39,9 @@ https://www.ben-morris.com/optimizing-performance-of-the-azure-service-bus-net-s
 https://ml-software.ch/posts/stripe-api-with-asp-net-core-part-3
 
 https://www.serverless360.com/blog/auto-forwarding-a-hidden-gem-of-service-bus
+
+https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli
+
+https://github.com/paolosalvatori/ServiceBusExplorer/
+
+https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
