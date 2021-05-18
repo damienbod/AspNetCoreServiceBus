@@ -1,7 +1,9 @@
 ﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -25,6 +27,7 @@ namespace ServiceBusMessaging
         private const string SUBSCRIPTION_NAME = "mytopicsubscription";
         private readonly ILogger _logger;
         private readonly ServiceBusClient _client;
+        private readonly ServiceBusAdministrationClient _adminClient;
         private ServiceBusProcessor _processor;
 
         public ServiceBusTopicSubscription(IProcessData processData, 
@@ -37,6 +40,7 @@ namespace ServiceBusMessaging
 
             var connectionString = _configuration.GetConnectionString("ServiceBusConnectionString");
             _client = new ServiceBusClient(connectionString);
+            _adminClient = new ServiceBusAdministrationClient(connectionString);
         }
 
         public async Task PrepareFiltersAndHandleMessages()
@@ -76,19 +80,30 @@ namespace ServiceBusMessaging
 
         private async Task AddFilters()
         {
-            //try
-            //{
-            //    var rules = await _subscriptionClient.GetRulesAsync();
-            //    if(!rules.Any(r => r.Name == "GoalsGreaterThanSeven"))
-            //    {
-            //        var filter = new SqlFilter("goals > 7");
-            //        await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogWarning(ex.ToString());
-            //}
+            try
+            {
+                var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME);
+                var ruleProperties = new List<RuleProperties>();
+                await foreach (var rule in rules)
+                {
+                    ruleProperties.Add(rule);
+                    // {rule.Name}, Rule: {rule.Filter}");
+                }
+
+                if (!ruleProperties.Any(r => r.Name == "GoalsGreaterThanSeven"))
+                {
+                    CreateRuleOptions createRuleOptions = new CreateRuleOptions
+                    {
+                        Name = "GoalsGreaterThanSeven",
+                        Filter = new SqlRuleFilter("goals > 7")
+                    };
+                    await _adminClient.CreateRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, createRuleOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.ToString());
+            }
         }
 
         private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
