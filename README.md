@@ -10,7 +10,14 @@
 	<li><a href="https://damienbod.com/2020/03/06/using-azure-service-bus-with-restricted-access/">Using Azure Service Bus with restricted access</a></li>
 </ul>
 
-
+user secrets
+```
+{
+  "ConnectionStrings": {
+    "ServiceBusConnectionString": "--your-servicebus-connection--string--"
+  }
+}
+```
 ## History
 
 2020-03-06 Added restricted access example
