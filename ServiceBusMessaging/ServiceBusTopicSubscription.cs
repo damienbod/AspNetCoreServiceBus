@@ -1,7 +1,6 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Text;
@@ -13,17 +12,20 @@ namespace ServiceBusMessaging
     public interface IServiceBusTopicSubscription
     {
         Task PrepareFiltersAndHandleMessages();
-        Task CloseSubscriptionClientAsync();
+        Task CloseQueueAsync();
+        ValueTask DisposeAsync();
+
     }
 
     public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     {
         private readonly IProcessData _processData;
         private readonly IConfiguration _configuration;
-        private readonly SubscriptionClient _subscriptionClient;
         private const string TOPIC_PATH = "mytopic";
         private const string SUBSCRIPTION_NAME = "mytopicsubscription";
         private readonly ILogger _logger;
+        private readonly ServiceBusClient _client;
+        private ServiceBusProcessor _processor;
 
         public ServiceBusTopicSubscription(IProcessData processData, 
             IConfiguration configuration, 
@@ -33,84 +35,95 @@ namespace ServiceBusMessaging
             _configuration = configuration;
             _logger = logger;
 
-            _subscriptionClient = new SubscriptionClient(
-                _configuration.GetConnectionString("ServiceBusConnectionString"), 
-                TOPIC_PATH, 
-                SUBSCRIPTION_NAME);
+            var connectionString = _configuration.GetConnectionString("ServiceBusConnectionString");
+            _client = new ServiceBusClient(connectionString);
         }
 
         public async Task PrepareFiltersAndHandleMessages()
         {
-            await RemoveDefaultFilters();
-            await AddFilters();
-
-            var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
+            ServiceBusProcessorOptions _serviceBusProcessorOptions = new ServiceBusProcessorOptions
             {
                 MaxConcurrentCalls = 1,
-                AutoComplete = false,
+                AutoCompleteMessages = false,
             };
 
-            _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
+            _processor = _client.CreateProcessor(TOPIC_PATH, SUBSCRIPTION_NAME, _serviceBusProcessorOptions);
+            _processor.ProcessMessageAsync += ProcessMessagesAsync;
+            _processor.ProcessErrorAsync += ProcessErrorAsync;
+
+            await RemoveDefaultFilters();
+            await AddFilters();
         }
 
         private async Task RemoveDefaultFilters()
         {
-            try
-            {
-                var rules = await _subscriptionClient.GetRulesAsync();
-                foreach(var rule in rules)
-                {
-                    if(rule.Name == RuleDescription.DefaultRuleName)
-                    {
-                        await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex.ToString());
-            }
+        //    try
+        //    {
+        //        var rules = await _subscriptionClient.GetRulesAsync();
+        //        foreach(var rule in rules)
+        //        {
+        //            if(rule.Name == RuleDescription.DefaultRuleName)
+        //            {
+        //                await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogWarning(ex.ToString());
+        //    }
         }
 
         private async Task AddFilters()
         {
-            try
-            {
-                var rules = await _subscriptionClient.GetRulesAsync();
-                if(!rules.Any(r => r.Name == "GoalsGreaterThanSeven"))
-                {
-                    var filter = new SqlFilter("goals > 7");
-                    await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex.ToString());
-            }
+            //try
+            //{
+            //    var rules = await _subscriptionClient.GetRulesAsync();
+            //    if(!rules.Any(r => r.Name == "GoalsGreaterThanSeven"))
+            //    {
+            //        var filter = new SqlFilter("goals > 7");
+            //        await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogWarning(ex.ToString());
+            //}
         }
 
-        private async Task ProcessMessagesAsync(Message message, CancellationToken token)
+        private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
         {
-            var myPayload = JsonConvert.DeserializeObject<MyPayload>(Encoding.UTF8.GetString(message.Body));
+            var myPayload = args.Message.Body.ToObjectFromJson<MyPayload>();
             await _processData.Process(myPayload);
-            await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
+            await args.CompleteMessageAsync(args.Message);
         }
 
-        private Task ExceptionReceivedHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+        private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
         {
-            _logger.LogError(exceptionReceivedEventArgs.Exception, "Message handler encountered an exception");
-            var context = exceptionReceivedEventArgs.ExceptionReceivedContext;
-
-            _logger.LogDebug($"- Endpoint: {context.Endpoint}");
-            _logger.LogDebug($"- Entity Path: {context.EntityPath}");
-            _logger.LogDebug($"- Executing Action: {context.Action}");
+            _logger.LogError(arg.Exception, "Message handler encountered an exception");
+            _logger.LogDebug($"- ErrorSource: {arg.ErrorSource}");
+            _logger.LogDebug($"- Entity Path: {arg.EntityPath}");
+            _logger.LogDebug($"- FullyQualifiedNamespace: {arg.FullyQualifiedNamespace}");
 
             return Task.CompletedTask;
         }
 
-        public async Task CloseSubscriptionClientAsync()
+        public async ValueTask DisposeAsync()
         {
-            await _subscriptionClient.CloseAsync();
+            if (_processor != null)
+            {
+                await _processor.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (_client != null)
+            {
+                await _client.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task CloseQueueAsync()
+        {
+            await _processor.CloseAsync().ConfigureAwait(false);
         }
     }
 }

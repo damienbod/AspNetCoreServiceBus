@@ -1,40 +1,41 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ServiceBusMessaging
 {
     public class ServiceBusTopicSender
     {
-        private readonly TopicClient _topicClient;
         private readonly IConfiguration _configuration;
         private const string TOPIC_PATH = "mytopic";
         private readonly ILogger _logger;
+        private readonly ServiceBusClient _client;
+        private readonly Azure.Messaging.ServiceBus.ServiceBusSender _clientSender;
 
         public ServiceBusTopicSender(IConfiguration configuration, 
             ILogger<ServiceBusTopicSender> logger)
         {
             _configuration = configuration;
             _logger = logger;
-            _topicClient = new TopicClient(
-                _configuration.GetConnectionString("ServiceBusConnectionString"),
-                TOPIC_PATH
-            );
+
+            var connectionString = configuration.GetConnectionString("ServiceBusConnectionString");
+            _client = new ServiceBusClient(connectionString);
+            _clientSender = _client.CreateSender(TOPIC_PATH);
         }
         
         public async Task SendMessage(MyPayload payload)
         {
-            string data = JsonConvert.SerializeObject(payload);
-            Message message = new Message(Encoding.UTF8.GetBytes(data));
-            message.UserProperties.Add("goals", payload.Goals);
+            string messagePayload = JsonSerializer.Serialize(payload);
+            ServiceBusMessage message = new ServiceBusMessage(messagePayload);
+
+            message.ApplicationProperties.Add("goals", payload.Goals);
 
             try
             {
-                await _topicClient.SendAsync(message);
+                await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
             }
             catch (Exception e)
             {

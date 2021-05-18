@@ -21,7 +21,7 @@ namespace AspNetCoreServiceBusApi2
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers();
 
             var connection = Configuration.GetConnectionString("DefaultConnection");
 
