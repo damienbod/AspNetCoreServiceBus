@@ -28,6 +28,8 @@ user secrets
 
 ## Links
 
+https://github.com/Azure/azure-sdk-for-net/tree/master/sdk/servicebus/Azure.Messaging.ServiceBus
+
 https://docs.microsoft.com/en-us/azure/service-bus-messaging/
 
 https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-dotnet-get-started-with-queues
