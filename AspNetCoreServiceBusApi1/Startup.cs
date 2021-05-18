@@ -19,7 +19,7 @@ namespace AspNetCoreServiceBusApi1
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
+            services.AddControllers()
                 .AddNewtonsoftJson();
 
             services.AddScoped<ServiceBusSender>();
