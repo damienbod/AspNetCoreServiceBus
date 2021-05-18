@@ -12,7 +12,7 @@ namespace ReducedAccessRightsQueueSender
         static async Task Main(string[] args)
         {
             _client = new ServiceBusClient(ConnectionStringQueueBus);
-            _clientSender = _client.CreateSender("simplequeue");
+            _clientSender = _client.CreateSender("myqueue");
 
             //string messagePayload = JsonSerializer.Serialize(payload);
             ServiceBusMessage message = new ServiceBusMessage("some message from somewhere");
