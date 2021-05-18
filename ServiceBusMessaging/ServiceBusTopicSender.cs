@@ -9,7 +9,6 @@ namespace ServiceBusMessaging
 {
     public class ServiceBusTopicSender
     {
-        private readonly IConfiguration _configuration;
         private const string TOPIC_PATH = "mytopic";
         private readonly ILogger _logger;
         private readonly ServiceBusClient _client;
@@ -18,7 +17,6 @@ namespace ServiceBusMessaging
         public ServiceBusTopicSender(IConfiguration configuration, 
             ILogger<ServiceBusTopicSender> logger)
         {
-            _configuration = configuration;
             _logger = logger;
 
             var connectionString = configuration.GetConnectionString("ServiceBusConnectionString");
