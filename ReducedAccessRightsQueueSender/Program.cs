@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
-using System.Text;
+﻿using Azure.Messaging.ServiceBus;
 using System.Threading.Tasks;
 
 namespace ReducedAccessRightsQueueSender
@@ -7,15 +6,17 @@ namespace ReducedAccessRightsQueueSender
     class Program
     {
         private static string ConnectionStringQueueBus = "your connection string";
-        public static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
+        private static ServiceBusClient _client;
+        private static ServiceBusSender _clientSender;
 
-        static async Task MainAsync()
+        static async Task Main(string[] args)
         {
-            var myQueueConnectionString = new ServiceBusConnectionStringBuilder(ConnectionStringQueueBus);
-            var myQueue = new QueueClient(myQueueConnectionString);
-            var queueMessage = new Message(Encoding.UTF8.GetBytes("some message from somewhere"));
-            await myQueue.SendAsync(queueMessage);
+            _client = new ServiceBusClient(ConnectionStringQueueBus);
+            _clientSender = _client.CreateSender("simplequeue");
 
+            //string messagePayload = JsonSerializer.Serialize(payload);
+            ServiceBusMessage message = new ServiceBusMessage("some message from somewhere");
+            await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
         }
     }
 }
