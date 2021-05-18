@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceBusMessaging
@@ -61,25 +59,6 @@ namespace ServiceBusMessaging
 
         private async Task RemoveDefaultFilters()
         {
-        //    try
-        //    {
-        //        var rules = await _subscriptionClient.GetRulesAsync();
-        //        foreach(var rule in rules)
-        //        {
-        //            if(rule.Name == RuleDescription.DefaultRuleName)
-        //            {
-        //                await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogWarning(ex.ToString());
-        //    }
-        }
-
-        private async Task AddFilters()
-        {
             try
             {
                 var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME);
@@ -87,7 +66,34 @@ namespace ServiceBusMessaging
                 await foreach (var rule in rules)
                 {
                     ruleProperties.Add(rule);
-                    // {rule.Name}, Rule: {rule.Filter}");
+                }
+
+                foreach (var rule in ruleProperties)
+                {
+                    if (rule.Name == "GoalsGreaterThanSeven")
+                    {
+                        await _adminClient.DeleteRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, "GoalsGreaterThanSeven")
+                            .ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.ToString());
+            }
+        }
+
+        private async Task AddFilters()
+        {
+            try
+            {
+                var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME)
+                    .ConfigureAwait(false);
+
+                var ruleProperties = new List<RuleProperties>();
+                await foreach (var rule in rules)
+                {
+                    ruleProperties.Add(rule);
                 }
 
                 if (!ruleProperties.Any(r => r.Name == "GoalsGreaterThanSeven"))
@@ -97,7 +103,8 @@ namespace ServiceBusMessaging
                         Name = "GoalsGreaterThanSeven",
                         Filter = new SqlRuleFilter("goals > 7")
                     };
-                    await _adminClient.CreateRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, createRuleOptions);
+                    await _adminClient.CreateRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, createRuleOptions)
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -109,8 +116,8 @@ namespace ServiceBusMessaging
         private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
         {
             var myPayload = args.Message.Body.ToObjectFromJson<MyPayload>();
-            await _processData.Process(myPayload);
-            await args.CompleteMessageAsync(args.Message);
+            await _processData.Process(myPayload).ConfigureAwait(false);
+            await args.CompleteMessageAsync(args.Message).ConfigureAwait(false);
         }
 
         private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
