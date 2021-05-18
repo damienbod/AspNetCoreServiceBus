@@ -1,11 +1,10 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceBusMessaging
@@ -13,17 +12,21 @@ namespace ServiceBusMessaging
     public interface IServiceBusTopicSubscription
     {
         Task PrepareFiltersAndHandleMessages();
-        Task CloseSubscriptionClientAsync();
+        Task CloseQueueAsync();
+        ValueTask DisposeAsync();
+
     }
 
     public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     {
         private readonly IProcessData _processData;
         private readonly IConfiguration _configuration;
-        private readonly SubscriptionClient _subscriptionClient;
         private const string TOPIC_PATH = "mytopic";
         private const string SUBSCRIPTION_NAME = "mytopicsubscription";
         private readonly ILogger _logger;
+        private readonly ServiceBusClient _client;
+        private readonly ServiceBusAdministrationClient _adminClient;
+        private ServiceBusProcessor _processor;
 
         public ServiceBusTopicSubscription(IProcessData processData, 
             IConfiguration configuration, 
@@ -33,36 +36,46 @@ namespace ServiceBusMessaging
             _configuration = configuration;
             _logger = logger;
 
-            _subscriptionClient = new SubscriptionClient(
-                _configuration.GetConnectionString("ServiceBusConnectionString"), 
-                TOPIC_PATH, 
-                SUBSCRIPTION_NAME);
+            var connectionString = _configuration.GetConnectionString("ServiceBusConnectionString");
+            _client = new ServiceBusClient(connectionString);
+            _adminClient = new ServiceBusAdministrationClient(connectionString);
         }
 
         public async Task PrepareFiltersAndHandleMessages()
         {
+            ServiceBusProcessorOptions _serviceBusProcessorOptions = new ServiceBusProcessorOptions
+            {
+                MaxConcurrentCalls = 1,
+                AutoCompleteMessages = false,
+            };
+
+            _processor = _client.CreateProcessor(TOPIC_PATH, SUBSCRIPTION_NAME, _serviceBusProcessorOptions);
+            _processor.ProcessMessageAsync += ProcessMessagesAsync;
+            _processor.ProcessErrorAsync += ProcessErrorAsync;
+
             await RemoveDefaultFilters();
             await AddFilters();
 
-            var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
-            {
-                MaxConcurrentCalls = 1,
-                AutoComplete = false,
-            };
-
-            _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
+            await _processor.StartProcessingAsync().ConfigureAwait(false);
         }
 
         private async Task RemoveDefaultFilters()
         {
             try
             {
-                var rules = await _subscriptionClient.GetRulesAsync();
-                foreach(var rule in rules)
+                var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME);
+                var ruleProperties = new List<RuleProperties>();
+                await foreach (var rule in rules)
                 {
-                    if(rule.Name == RuleDescription.DefaultRuleName)
+                    ruleProperties.Add(rule);
+                }
+
+                foreach (var rule in ruleProperties)
+                {
+                    if (rule.Name == "GoalsGreaterThanSeven")
                     {
-                        await _subscriptionClient.RemoveRuleAsync(RuleDescription.DefaultRuleName);
+                        await _adminClient.DeleteRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, "GoalsGreaterThanSeven")
+                            .ConfigureAwait(false);
                     }
                 }
             }
@@ -76,11 +89,24 @@ namespace ServiceBusMessaging
         {
             try
             {
-                var rules = await _subscriptionClient.GetRulesAsync();
-                if(!rules.Any(r => r.Name == "GoalsGreaterThanSeven"))
+                var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME)
+                    .ConfigureAwait(false);
+
+                var ruleProperties = new List<RuleProperties>();
+                await foreach (var rule in rules)
                 {
-                    var filter = new SqlFilter("goals > 7");
-                    await _subscriptionClient.AddRuleAsync("GoalsGreaterThanSeven", filter);
+                    ruleProperties.Add(rule);
+                }
+
+                if (!ruleProperties.Any(r => r.Name == "GoalsGreaterThanSeven"))
+                {
+                    CreateRuleOptions createRuleOptions = new CreateRuleOptions
+                    {
+                        Name = "GoalsGreaterThanSeven",
+                        Filter = new SqlRuleFilter("goals > 7")
+                    };
+                    await _adminClient.CreateRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, createRuleOptions)
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -89,28 +115,39 @@ namespace ServiceBusMessaging
             }
         }
 
-        private async Task ProcessMessagesAsync(Message message, CancellationToken token)
+        private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
         {
-            var myPayload = JsonConvert.DeserializeObject<MyPayload>(Encoding.UTF8.GetString(message.Body));
-            await _processData.Process(myPayload);
-            await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);
+            var myPayload = args.Message.Body.ToObjectFromJson<MyPayload>();
+            await _processData.Process(myPayload).ConfigureAwait(false);
+            await args.CompleteMessageAsync(args.Message).ConfigureAwait(false);
         }
 
-        private Task ExceptionReceivedHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
+        private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
         {
-            _logger.LogError(exceptionReceivedEventArgs.Exception, "Message handler encountered an exception");
-            var context = exceptionReceivedEventArgs.ExceptionReceivedContext;
-
-            _logger.LogDebug($"- Endpoint: {context.Endpoint}");
-            _logger.LogDebug($"- Entity Path: {context.EntityPath}");
-            _logger.LogDebug($"- Executing Action: {context.Action}");
+            _logger.LogError(arg.Exception, "Message handler encountered an exception");
+            _logger.LogDebug($"- ErrorSource: {arg.ErrorSource}");
+            _logger.LogDebug($"- Entity Path: {arg.EntityPath}");
+            _logger.LogDebug($"- FullyQualifiedNamespace: {arg.FullyQualifiedNamespace}");
 
             return Task.CompletedTask;
         }
 
-        public async Task CloseSubscriptionClientAsync()
+        public async ValueTask DisposeAsync()
         {
-            await _subscriptionClient.CloseAsync();
+            if (_processor != null)
+            {
+                await _processor.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (_client != null)
+            {
+                await _client.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task CloseQueueAsync()
+        {
+            await _processor.CloseAsync().ConfigureAwait(false);
         }
     }
 }

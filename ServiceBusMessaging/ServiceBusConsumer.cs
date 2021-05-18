@@ -1,26 +1,25 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceBusMessaging
 {
     public interface IServiceBusConsumer
     {
-        void RegisterOnMessageHandlerAndReceiveMessages();
+        Task RegisterOnMessageHandlerAndReceiveMessages();
         Task CloseQueueAsync();
+        ValueTask DisposeAsync();
     }
 
     public class ServiceBusConsumer : IServiceBusConsumer
     {
         private readonly IProcessData _processData;
         private readonly IConfiguration _configuration;
-        private readonly QueueClient _queueClient;
+        private readonly ServiceBusClient _client;
         private const string QUEUE_NAME = "simplequeue";
         private readonly ILogger _logger;
+        private ServiceBusProcessor _processor;
 
         public ServiceBusConsumer(IProcessData processData, 
             IConfiguration configuration, 
@@ -29,42 +28,58 @@ namespace ServiceBusMessaging
             _processData = processData;
             _configuration = configuration;
             _logger = logger;
-            _queueClient = new QueueClient(_configuration.GetConnectionString("ServiceBusConnectionString"), QUEUE_NAME);
+
+            var connectionString = _configuration.GetConnectionString("ServiceBusConnectionString");
+            _client = new ServiceBusClient(connectionString);
         }
 
-        public void RegisterOnMessageHandlerAndReceiveMessages()
+        public async Task RegisterOnMessageHandlerAndReceiveMessages()
         {
-            var messageHandlerOptions = new MessageHandlerOptions(ExceptionReceivedHandler)
+            ServiceBusProcessorOptions _serviceBusProcessorOptions = new ServiceBusProcessorOptions
             {
                 MaxConcurrentCalls = 1,
-                AutoComplete = false
+                AutoCompleteMessages = false,
             };
 
-            _queueClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
+            _processor = _client.CreateProcessor(QUEUE_NAME, _serviceBusProcessorOptions);
+            _processor.ProcessMessageAsync += ProcessMessagesAsync;
+            _processor.ProcessErrorAsync += ProcessErrorAsync;
+            await _processor.StartProcessingAsync().ConfigureAwait(false);
         }
 
-        private async Task ProcessMessagesAsync(Message message, CancellationToken token)
+        private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
         {
-            var myPayload = JsonConvert.DeserializeObject<MyPayload>(Encoding.UTF8.GetString(message.Body));
-            await _processData.Process(myPayload);
-            await _queueClient.CompleteAsync(message.SystemProperties.LockToken);
-        }
-
-        private Task ExceptionReceivedHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
-        {
-            _logger.LogError(exceptionReceivedEventArgs.Exception, "Message handler encountered an exception");
-            var context = exceptionReceivedEventArgs.ExceptionReceivedContext;
-
-            _logger.LogDebug($"- Endpoint: {context.Endpoint}");
-            _logger.LogDebug($"- Entity Path: {context.EntityPath}");
-            _logger.LogDebug($"- Executing Action: {context.Action}");
+            _logger.LogError(arg.Exception, "Message handler encountered an exception");
+            _logger.LogDebug($"- ErrorSource: {arg.ErrorSource}");
+            _logger.LogDebug($"- Entity Path: {arg.EntityPath}");
+            _logger.LogDebug($"- FullyQualifiedNamespace: {arg.FullyQualifiedNamespace}");
 
             return Task.CompletedTask;
         }
 
+        private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
+        {
+            var myPayload = args.Message.Body.ToObjectFromJson<MyPayload>();
+            await _processData.Process(myPayload).ConfigureAwait(false);
+            await args.CompleteMessageAsync(args.Message).ConfigureAwait(false);
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_processor != null)
+            {
+                await _processor.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (_client != null)
+            {
+                await _client.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public async Task CloseQueueAsync()
         {
-            await _queueClient.CloseAsync();
+            await _processor.CloseAsync().ConfigureAwait(false);
         }
     }
 }
