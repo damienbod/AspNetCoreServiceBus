@@ -7,7 +7,7 @@ namespace ServiceBusMessaging
 {
     public interface IServiceBusConsumer
     {
-        void RegisterOnMessageHandlerAndReceiveMessages();
+        Task RegisterOnMessageHandlerAndReceiveMessages();
         Task CloseQueueAsync();
         ValueTask DisposeAsync();
     }
@@ -33,7 +33,7 @@ namespace ServiceBusMessaging
             _client = new ServiceBusClient(connectionString);
         }
 
-        public void RegisterOnMessageHandlerAndReceiveMessages()
+        public async Task RegisterOnMessageHandlerAndReceiveMessages()
         {
             ServiceBusProcessorOptions _serviceBusProcessorOptions = new ServiceBusProcessorOptions
             {
@@ -44,6 +44,7 @@ namespace ServiceBusMessaging
             _processor = _client.CreateProcessor(QUEUE_NAME, _serviceBusProcessorOptions);
             _processor.ProcessMessageAsync += ProcessMessagesAsync;
             _processor.ProcessErrorAsync += ProcessErrorAsync;
+            await _processor.StartProcessingAsync().ConfigureAwait(false);
         }
 
         private Task ProcessErrorAsync(ProcessErrorEventArgs arg)

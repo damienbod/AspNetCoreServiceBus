@@ -55,6 +55,8 @@ namespace ServiceBusMessaging
 
             await RemoveDefaultFilters();
             await AddFilters();
+
+            await _processor.StartProcessingAsync().ConfigureAwait(false);
         }
 
         private async Task RemoveDefaultFilters()
