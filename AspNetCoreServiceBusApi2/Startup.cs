@@ -32,6 +32,8 @@ namespace AspNetCoreServiceBusApi2
             services.AddSingleton<IServiceBusTopicSubscription, ServiceBusTopicSubscription>();
             services.AddSingleton<IProcessData, ProcessData>();
 
+            services.AddHostedService<WorkerServiceBus>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -71,12 +73,6 @@ namespace AspNetCoreServiceBusApi2
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Payload Management API V1");
             });
-
-            var bus = app.ApplicationServices.GetService<IServiceBusConsumer>();
-            bus.RegisterOnMessageHandlerAndReceiveMessages().GetAwaiter().GetResult();
-
-            var busSubscription = app.ApplicationServices.GetService<IServiceBusTopicSubscription>();
-            busSubscription.PrepareFiltersAndHandleMessages().GetAwaiter().GetResult();
         }
     }
 }
