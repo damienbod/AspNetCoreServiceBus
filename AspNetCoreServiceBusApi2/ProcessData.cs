@@ -16,7 +16,7 @@ namespace AspNetCoreServiceBusApi2
         }
         public async Task Process(MyPayload myPayload)
         {
-            using (var payloadMessageContext = 
+            using (var payloadMessageContext =
                 new PayloadMessageContext(
                     _configuration.GetConnectionString("DefaultConnection")))
             {

@@ -40,6 +40,6 @@ namespace AspNetCoreServiceBusApi1
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseSerilog(); 
+                .UseSerilog();
     }
 }

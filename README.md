@@ -20,7 +20,7 @@ user secrets
 ```
 ## History
 
-2021-05-18 Updated to .NET 5, migrated to Azure.Messaging.ServiceBus, switched Json serializer
+2021-05-19 Updated to .NET 5, migrated to Azure.Messaging.ServiceBus, switched Json serializer
 
 2020-03-06 Added restricted access example
 

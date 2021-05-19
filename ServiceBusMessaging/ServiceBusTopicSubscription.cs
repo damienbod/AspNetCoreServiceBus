@@ -28,8 +28,8 @@ namespace ServiceBusMessaging
         private readonly ServiceBusAdministrationClient _adminClient;
         private ServiceBusProcessor _processor;
 
-        public ServiceBusTopicSubscription(IProcessData processData, 
-            IConfiguration configuration, 
+        public ServiceBusTopicSubscription(IProcessData processData,
+            IConfiguration configuration,
             ILogger<ServiceBusTopicSubscription> logger)
         {
             _processData = processData;

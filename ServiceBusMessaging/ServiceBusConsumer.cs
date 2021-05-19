@@ -21,8 +21,8 @@ namespace ServiceBusMessaging
         private readonly ILogger _logger;
         private ServiceBusProcessor _processor;
 
-        public ServiceBusConsumer(IProcessData processData, 
-            IConfiguration configuration, 
+        public ServiceBusConsumer(IProcessData processData,
+            IConfiguration configuration,
             ILogger<ServiceBusConsumer> logger)
         {
             _processData = processData;

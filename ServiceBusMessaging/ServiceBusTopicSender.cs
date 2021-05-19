@@ -14,7 +14,7 @@ namespace ServiceBusMessaging
         private readonly ServiceBusClient _client;
         private readonly Azure.Messaging.ServiceBus.ServiceBusSender _clientSender;
 
-        public ServiceBusTopicSender(IConfiguration configuration, 
+        public ServiceBusTopicSender(IConfiguration configuration,
             ILogger<ServiceBusTopicSender> logger)
         {
             _logger = logger;
@@ -23,7 +23,7 @@ namespace ServiceBusMessaging
             _client = new ServiceBusClient(connectionString);
             _clientSender = _client.CreateSender(TOPIC_PATH);
         }
-        
+
         public async Task SendMessage(MyPayload payload)
         {
             string messagePayload = JsonSerializer.Serialize(payload);

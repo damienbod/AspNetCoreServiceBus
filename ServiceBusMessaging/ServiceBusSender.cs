@@ -17,7 +17,7 @@ namespace ServiceBusMessaging
             _client = new ServiceBusClient(connectionString);
             _clientSender = _client.CreateSender(QUEUE_NAME);
         }
-        
+
         public async Task SendMessage(MyPayload payload)
         {
             string messagePayload = JsonSerializer.Serialize(payload);

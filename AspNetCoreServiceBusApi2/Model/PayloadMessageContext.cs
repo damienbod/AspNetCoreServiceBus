@@ -21,8 +21,8 @@ namespace AspNetCoreServiceBusApi2.Model
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Payload>().Property(n => n.Id).ValueGeneratedOnAdd();
-            builder.Entity<Payload>().HasKey(m => m.Id); 
-            base.OnModelCreating(builder); 
-        } 
+            builder.Entity<Payload>().HasKey(m => m.Id);
+            base.OnModelCreating(builder);
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace FunctionService3
     {
         [FunctionName("SubscriptionClientFunction")]
         public static void Run([ServiceBusTrigger(
-            "mytopic", 
+            "mytopic",
             "functionsubscription",
             Connection = "ServiceBusConnectionString")]string message, ILogger log)
         {
