@@ -33,7 +33,7 @@ namespace AspNetCoreServiceBusApi2
         {
             _logger.LogDebug("Stopping the service bus queue consumer and the subscription");
             await _serviceBusConsumer.CloseQueueAsync();
-            await _serviceBusTopicSubscription.CloseQueueAsync();
+            await _serviceBusTopicSubscription.CloseSubscriptionAsync();
         }
 
         public void Dispose()
