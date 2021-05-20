@@ -53,8 +53,8 @@ namespace ServiceBusMessaging
             _processor.ProcessMessageAsync += ProcessMessagesAsync;
             _processor.ProcessErrorAsync += ProcessErrorAsync;
 
-            await RemoveDefaultFilters();
-            await AddFilters();
+            await RemoveDefaultFilters().ConfigureAwait(false);
+            await AddFilters().ConfigureAwait(false);
 
             await _processor.StartProcessingAsync().ConfigureAwait(false);
         }
