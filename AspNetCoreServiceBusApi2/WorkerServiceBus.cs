@@ -25,21 +25,21 @@ namespace AspNetCoreServiceBusApi2
         public async Task StartAsync(CancellationToken stoppingToken)
         {
             _logger.LogDebug("Starting the service bus queue consumer and the subscription");
-            await _serviceBusConsumer.RegisterOnMessageHandlerAndReceiveMessages();
-            await _serviceBusTopicSubscription.PrepareFiltersAndHandleMessages();
+            await _serviceBusConsumer.RegisterOnMessageHandlerAndReceiveMessages().ConfigureAwait(false);
+            await _serviceBusTopicSubscription.PrepareFiltersAndHandleMessages().ConfigureAwait(false);
         }
   
         public async Task StopAsync(CancellationToken stoppingToken)
         {
             _logger.LogDebug("Stopping the service bus queue consumer and the subscription");
-            await _serviceBusConsumer.CloseQueueAsync();
-            await _serviceBusTopicSubscription.CloseSubscriptionAsync();
+            await _serviceBusConsumer.CloseQueueAsync().ConfigureAwait(false);
+            await _serviceBusTopicSubscription.CloseSubscriptionAsync().ConfigureAwait(false);
         }
 
         public void Dispose()
         {
-            _ = _serviceBusConsumer.DisposeAsync();
-            _ = _serviceBusTopicSubscription.DisposeAsync();
+            _ = _serviceBusConsumer.DisposeAsync().ConfigureAwait(false);
+            _ = _serviceBusTopicSubscription.DisposeAsync().ConfigureAwait(false);
         }
     }
 }
