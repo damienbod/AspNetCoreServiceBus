@@ -20,7 +20,7 @@ user secrets
 ```
 ## History
 
-2021-05-20 Added IHostedService to consumer the messags in the ASP.NET Core app
+2021-05-20 Added IHostedService to consumer the message in the ASP.NET Core app
 
 2021-05-19 Updated to .NET 5, migrated to Azure.Messaging.ServiceBus, switched Json serializer
 
