@@ -38,8 +38,17 @@ namespace AspNetCoreServiceBusApi2
 
         public void Dispose()
         {
-            _ = _serviceBusConsumer.DisposeAsync().ConfigureAwait(false);
-            _ = _serviceBusTopicSubscription.DisposeAsync().ConfigureAwait(false);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                await _serviceBusConsumer.DisposeAsync().ConfigureAwait(false);
+                await _serviceBusTopicSubscription.DisposeAsync().ConfigureAwait(false);
+            }
         }
     }
 }
