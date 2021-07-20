@@ -8,6 +8,7 @@
 	<li><a href="https://damienbod.com/2019/04/30/using-ef-core-to-process-azure-service-messages-in-asp-net-core/">Using Entity Framework Core to process Azure Service Messages in ASP.NET Core</a></li>
 	<li><a href="https://damienbod.com/2019/05/03/using-an-azure-service-bus-topic-subscription-in-an-azure-function/">Using an Azure Service Bus Topic Subscription in an Azure Function</a></li>
 	<li><a href="https://damienbod.com/2020/03/06/using-azure-service-bus-with-restricted-access/">Using Azure Service Bus with restricted access</a></li>
+	<li><a href="/">Using an ASP.NET Core IHostedService to run Azure Service Bus subscriptions and consumers</a></li>
 </ul>
 
 user secrets
@@ -19,6 +20,8 @@ user secrets
 }
 ```
 ## History
+
+2021-06-18 Added IHostedService to consumer the message in the ASP.NET Core app
 
 2021-05-19 Updated to .NET 5, migrated to Azure.Messaging.ServiceBus, switched Json serializer
 

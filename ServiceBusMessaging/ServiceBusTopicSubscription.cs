@@ -9,13 +9,6 @@ using System.Threading.Tasks;
 
 namespace ServiceBusMessaging
 {
-    public interface IServiceBusTopicSubscription
-    {
-        Task PrepareFiltersAndHandleMessages();
-        Task CloseQueueAsync();
-        ValueTask DisposeAsync();
-
-    }
 
     public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     {
@@ -53,8 +46,8 @@ namespace ServiceBusMessaging
             _processor.ProcessMessageAsync += ProcessMessagesAsync;
             _processor.ProcessErrorAsync += ProcessErrorAsync;
 
-            await RemoveDefaultFilters();
-            await AddFilters();
+            await RemoveDefaultFilters().ConfigureAwait(false);
+            await AddFilters().ConfigureAwait(false);
 
             await _processor.StartProcessingAsync().ConfigureAwait(false);
         }
@@ -145,7 +138,7 @@ namespace ServiceBusMessaging
             }
         }
 
-        public async Task CloseQueueAsync()
+        public async Task CloseSubscriptionAsync()
         {
             await _processor.CloseAsync().ConfigureAwait(false);
         }

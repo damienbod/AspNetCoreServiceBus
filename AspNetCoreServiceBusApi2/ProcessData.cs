@@ -25,9 +25,9 @@ namespace AspNetCoreServiceBusApi2
                     Name = myPayload.Name,
                     Goals = myPayload.Goals,
                     Created = DateTime.UtcNow
-                });
+                }).ConfigureAwait(false);
 
-                await payloadMessageContext.SaveChangesAsync();
+                await payloadMessageContext.SaveChangesAsync().ConfigureAwait(false);
             }
         }
     }

@@ -66,7 +66,7 @@ namespace AspNetCoreServiceBusApi1.Controllers
                 Goals = request.Goals,
                 Name = request.Name,
                 Delete = false
-            });
+            }).ConfigureAwait(false);
 
             return Ok(request);
         }
@@ -94,7 +94,7 @@ namespace AspNetCoreServiceBusApi1.Controllers
                 Goals = request.Goals,
                 Name = request.Name,
                 Delete = false
-            });
+            }).ConfigureAwait(false);
 
             return Ok(request);
         }
@@ -127,7 +127,7 @@ namespace AspNetCoreServiceBusApi1.Controllers
                 Goals = item.Goals,
                 Name = item.Name,
                 Delete = true
-            });
+            }).ConfigureAwait(false);
 
             return Ok();
         }
