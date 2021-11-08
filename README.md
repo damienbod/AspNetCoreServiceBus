@@ -1,3 +1,5 @@
+[![.NET](https://github.com/damienbod/AspNetCoreServiceBus/actions/workflows/dotnet.yml/badge.svg)](https://github.com/damienbod/AspNetCoreServiceBus/actions/workflows/dotnet.yml)
+
 # ASP.NET Core Azure Sevice Bus
 
 
