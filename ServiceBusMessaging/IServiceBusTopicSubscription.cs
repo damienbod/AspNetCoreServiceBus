@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿namespace ServiceBusMessaging;
 
-namespace ServiceBusMessaging
+public interface IServiceBusTopicSubscription
 {
-    public interface IServiceBusTopicSubscription
-    {
-        Task PrepareFiltersAndHandleMessages();
-        Task CloseSubscriptionAsync();
-        ValueTask DisposeAsync();
-    }
+    Task PrepareFiltersAndHandleMessages();
+    Task CloseSubscriptionAsync();
+    ValueTask DisposeAsync();
 }

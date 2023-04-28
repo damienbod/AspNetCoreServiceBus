@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace ServiceBusMessaging;
 
-namespace ServiceBusMessaging
+public interface IProcessData
 {
-    public interface IProcessData
-    {
-        Task Process(MyPayload myPayload);
-    }
+    Task Process(MyPayload myPayload);
 }

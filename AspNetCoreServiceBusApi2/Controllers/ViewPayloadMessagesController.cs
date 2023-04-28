@@ -1,49 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AspNetCoreServiceBusApi2.Model;
-using Microsoft.AspNetCore.Http;
+﻿using AspNetCoreServiceBusApi2.Model;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AspNetCoreServiceBusApi2.Controllers
+namespace AspNetCoreServiceBusApi2.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ViewPayloadMessagesController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ViewPayloadMessagesController : Controller
+    private readonly PayloadContext _context;
+
+    public ViewPayloadMessagesController(PayloadContext context)
     {
-        private readonly PayloadContext _context;
+        _context = context;
+    }
 
-        public ViewPayloadMessagesController(PayloadContext context)
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<List<Payload>> Get()
+    {
+        return Ok(_context.Payloads.ToList());
+    }
+
+    [HttpGet("{name}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<Payload> Get(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
         {
-            _context = context;
+            return BadRequest();
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<List<Payload>> Get()
+        var result = _context.Payloads.FirstOrDefault(d => d.Name == name);
+
+        if (result == null)
         {
-            return Ok(_context.Payloads.ToList());
+            return NotFound();
         }
 
-        [HttpGet("{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Payload> Get(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return BadRequest();
-            }
-
-            var result = _context.Payloads.FirstOrDefault(d => d.Name == name);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
+        return Ok(result);
     }
 }
