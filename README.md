@@ -2,16 +2,13 @@
 
 # ASP.NET Core Azure Sevice Bus
 
-
-<ul>
-	<li><a href="https://damienbod.com/2019/04/23/using-azure-service-bus-queues-with-asp-net-core-services/">Using Azure Service Bus Queues with ASP.NET Core Services</a></li>
-	<li><a href="https://damienbod.com/2019/04/24/using-azure-service-bus-topics-in-asp-net-core/">Using Azure Service Bus Topics in ASP.NET Core</a></li>
-	<li><a href="https://damienbod.com/2019/04/27/using-azure-service-bus-topics-subscription-filters-in-asp-net-core/">Using Azure Service Bus Topics Subscription Filters in ASP.NET Core</a></li>
-	<li><a href="https://damienbod.com/2019/04/30/using-ef-core-to-process-azure-service-messages-in-asp-net-core/">Using Entity Framework Core to process Azure Service Messages in ASP.NET Core</a></li>
-	<li><a href="https://damienbod.com/2019/05/03/using-an-azure-service-bus-topic-subscription-in-an-azure-function/">Using an Azure Service Bus Topic Subscription in an Azure Function</a></li>
-	<li><a href="https://damienbod.com/2020/03/06/using-azure-service-bus-with-restricted-access/">Using Azure Service Bus with restricted access</a></li>
-	<li><a href="https://damienbod.com/2021/07/20/using-an-asp-net-core-ihostedservice-to-run-azure-service-bus-subscriptions-and-consumers/">Using an ASP.NET Core IHostedService to run Azure Service Bus subscriptions and consumers</a></li>
-</ul>
+- [Using Azure Service Bus Queues with ASP.NET Core Services](https://damienbod.com/2019/04/23/using-azure-service-bus-queues-with-asp-net-core-services/)
+- [Using Azure Service Bus Topics in ASP.NET Core](https://damienbod.com/2019/04/24/using-azure-service-bus-topics-in-asp-net-core/)
+- [Using Azure Service Bus Topics Subscription Filters in ASP.NET Core](https://damienbod.com/2019/04/27/using-azure-service-bus-topics-subscription-filters-in-asp-net-core/)
+- [Using Entity Framework Core to process Azure Service Messages in ASP.NET Core](https://damienbod.com/2019/04/30/using-ef-core-to-process-azure-service-messages-in-asp-net-core/)
+- [Using an Azure Service Bus Topic Subscription in an Azure Function](https://damienbod.com/2019/05/03/using-an-azure-service-bus-topic-subscription-in-an-azure-function/)
+- [Using Azure Service Bus with restricted access](https://damienbod.com/2020/03/06/using-azure-service-bus-with-restricted-access/)
+- [Using an ASP.NET Core IHostedService to run Azure Service Bus subscriptions and consumers](https://damienbod.com/2021/07/20/using-an-asp-net-core-ihostedservice-to-run-azure-service-bus-subscriptions-and-consumers/)
 
 user secrets
 ```
@@ -22,6 +19,8 @@ user secrets
 }
 ```
 ## History
+
+2023-04-28 Updated .NET 7
 
 2021-11-08 Updated .NET 6
 
