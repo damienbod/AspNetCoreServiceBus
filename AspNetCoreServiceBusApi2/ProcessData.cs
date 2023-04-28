@@ -5,26 +5,26 @@ namespace AspNetCoreServiceBusApi2;
 
 public class ProcessData : IProcessData
 {
-    private IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
     public ProcessData(IConfiguration configuration)
     {
         _configuration = configuration;
     }
+
     public async Task Process(MyPayload myPayload)
     {
-        using (var payloadMessageContext =
-            new PayloadMessageContext(
-                _configuration.GetConnectionString("DefaultConnection")))
-        {
-            await payloadMessageContext.AddAsync(new Payload
-            {
-                Name = myPayload.Name,
-                Goals = myPayload.Goals,
-                Created = DateTime.UtcNow
-            }).ConfigureAwait(false);
+        var connection = _configuration.GetConnectionString("DefaultConnection");
+        if(connection == null) throw new ArgumentNullException(nameof(connection));
 
-            await payloadMessageContext.SaveChangesAsync().ConfigureAwait(false);
-        }
+        using var payloadMessageContext = new PayloadMessageContext(connection);
+        await payloadMessageContext.AddAsync(new Payload
+        {
+            Name = myPayload.Name,
+            Goals = myPayload.Goals,
+            Created = DateTime.UtcNow
+        }).ConfigureAwait(false);
+
+        await payloadMessageContext.SaveChangesAsync().ConfigureAwait(false);
     }
 }

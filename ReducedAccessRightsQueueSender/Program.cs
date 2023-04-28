@@ -4,9 +4,9 @@ namespace ReducedAccessRightsQueueSender;
 
 class Program
 {
-    private static string ConnectionStringQueueBus = "your connection string";
-    private static ServiceBusClient _client;
-    private static ServiceBusSender _clientSender;
+    private static readonly string ConnectionStringQueueBus = "your connection string";
+    private static ServiceBusClient? _client;
+    private static ServiceBusSender? _clientSender;
 
     static async Task Main(string[] args)
     {
@@ -14,7 +14,7 @@ class Program
         _clientSender = _client.CreateSender("myqueue");
 
         //string messagePayload = JsonSerializer.Serialize(payload);
-        ServiceBusMessage message = new ServiceBusMessage("some message from somewhere");
+        var message = new ServiceBusMessage("some message from somewhere");
         await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
     }
 }

@@ -9,7 +9,7 @@ namespace AspNetCoreServiceBusApi1.Controllers;
 [ApiController]
 public class PayloadController : Controller
 {
-    private ServiceBusSender _serviceBusSender;
+    private readonly ServiceBusSender _serviceBusSender;
 
     public PayloadController(ServiceBusSender serviceBusSender)
     {
@@ -128,7 +128,7 @@ public class PayloadController : Controller
         return Ok();
     }
 
-    private static readonly List<Payload> data = new List<Payload>
+    private static readonly List<Payload> data = new()
     {
         new Payload{ Id=1, Goals=3, Name="wow"},
         new Payload{ Id=2, Goals=4, Name="not so bad"},

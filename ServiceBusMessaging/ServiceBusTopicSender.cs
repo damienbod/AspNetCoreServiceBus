@@ -25,7 +25,7 @@ public class ServiceBusTopicSender
     public async Task SendMessage(MyPayload payload)
     {
         string messagePayload = JsonSerializer.Serialize(payload);
-        ServiceBusMessage message = new ServiceBusMessage(messagePayload);
+        var message = new ServiceBusMessage(messagePayload);
 
         message.ApplicationProperties.Add("goals", payload.Goals);
 

@@ -15,7 +15,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     private readonly ILogger _logger;
     private readonly ServiceBusClient _client;
     private readonly ServiceBusAdministrationClient _adminClient;
-    private ServiceBusProcessor _processor;
+    private ServiceBusProcessor? _processor = null;
 
     public ServiceBusTopicSubscription(IProcessData processData,
         IConfiguration configuration,
@@ -32,7 +32,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
 
     public async Task PrepareFiltersAndHandleMessages()
     {
-        ServiceBusProcessorOptions _serviceBusProcessorOptions = new ServiceBusProcessorOptions
+        var _serviceBusProcessorOptions = new ServiceBusProcessorOptions
         {
             MaxConcurrentCalls = 1,
             AutoCompleteMessages = false,
@@ -70,7 +70,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex.ToString());
+            _logger.LogError("{ex}", ex.ToString());
         }
     }
 
@@ -89,7 +89,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
 
             if (!ruleProperties.Any(r => r.Name == "GoalsGreaterThanSeven"))
             {
-                CreateRuleOptions createRuleOptions = new CreateRuleOptions
+                var createRuleOptions = new CreateRuleOptions
                 {
                     Name = "GoalsGreaterThanSeven",
                     Filter = new SqlRuleFilter("goals > 7")
@@ -100,7 +100,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex.ToString());
+            _logger.LogWarning("{ex}", ex.ToString());
         }
     }
 
@@ -114,9 +114,9 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
     {
         _logger.LogError(arg.Exception, "Message handler encountered an exception");
-        _logger.LogDebug($"- ErrorSource: {arg.ErrorSource}");
-        _logger.LogDebug($"- Entity Path: {arg.EntityPath}");
-        _logger.LogDebug($"- FullyQualifiedNamespace: {arg.FullyQualifiedNamespace}");
+        _logger.LogDebug("- ErrorSource: {ErrorSource}", arg.ErrorSource);
+        _logger.LogDebug("- Entity Path: {EntityPath}", arg.EntityPath);
+        _logger.LogDebug("- FullyQualifiedNamespace: {FullyQualifiedNamespace}", arg.FullyQualifiedNamespace);
 
         return Task.CompletedTask;
     }
@@ -136,6 +136,6 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
 
     public async Task CloseSubscriptionAsync()
     {
-        await _processor.CloseAsync().ConfigureAwait(false);
+        await _processor!.CloseAsync().ConfigureAwait(false);
     }
 }

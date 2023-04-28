@@ -4,7 +4,7 @@ namespace AspNetCoreServiceBusApi2.Model;
 
 public class PayloadMessageContext : DbContext
 {
-    private string _connectionString;
+    private readonly string _connectionString;
 
     public DbSet<Payload> Payloads { get; set; }
 
