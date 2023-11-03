@@ -18,19 +18,16 @@ user secrets
   }
 }
 ```
+
 ## History
 
-2023-04-28 Updated .NET 7
-
-2021-11-08 Updated .NET 6
-
-2021-07-20 Added IHostedService to consumer the message in the ASP.NET Core app
-
-2021-05-19 Updated to .NET 5, migrated to Azure.Messaging.ServiceBus, switched Json serializer
-
-2020-03-06 Added restricted access example
-
-2019-12-08 Updated to .NET Core 3.1
+- 2023-11-03 Updated packages
+- 2023-04-28 Updated .NET 7
+- 2021-11-08 Updated .NET 6
+- 2021-07-20 Added IHostedService to consumer the message in the ASP.NET Core app
+- 2021-05-19 Updated to .NET 5, migrated to Azure.Messaging.ServiceBus, switched Json serializer
+- 2020-03-06 Added restricted access example
+- 2019-12-08 Updated to .NET Core 3.1
 
 ## Links
 
