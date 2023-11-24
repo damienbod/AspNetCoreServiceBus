@@ -21,6 +21,7 @@ user secrets
 
 ## History
 
+- 2023-11-24 Updated .NET 8
 - 2023-11-03 Updated packages
 - 2023-04-28 Updated .NET 7
 - 2021-11-08 Updated .NET 6
