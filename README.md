@@ -1,6 +1,6 @@
 [![.NET](https://github.com/damienbod/AspNetCoreServiceBus/actions/workflows/dotnet.yml/badge.svg)](https://github.com/damienbod/AspNetCoreServiceBus/actions/workflows/dotnet.yml)
 
-# ASP.NET Core Azure Sevice Bus
+# ASP.NET Core Azure Service Bus
 
 - [Using Azure Service Bus Queues with ASP.NET Core Services](https://damienbod.com/2019/04/23/using-azure-service-bus-queues-with-asp-net-core-services/)
 - [Using Azure Service Bus Topics in ASP.NET Core](https://damienbod.com/2019/04/24/using-azure-service-bus-topics-in-asp-net-core/)
