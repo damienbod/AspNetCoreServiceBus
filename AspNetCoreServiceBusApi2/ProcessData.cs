@@ -15,7 +15,7 @@ public class ProcessData : IProcessData
     public async Task Process(MyPayload myPayload)
     {
         var connection = _configuration.GetConnectionString("DefaultConnection");
-        if(connection == null) throw new ArgumentNullException(nameof(connection));
+        if (connection == null) throw new ArgumentNullException(nameof(connection));
 
         using var payloadMessageContext = new PayloadMessageContext(connection);
         await payloadMessageContext.AddAsync(new Payload
