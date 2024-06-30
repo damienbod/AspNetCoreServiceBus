@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 
 namespace ServiceBusMessaging;
 
-
 public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
 {
     private readonly IProcessData _processData;
