@@ -1,24 +1,22 @@
-using AspNetCoreServiceBusApi2.Model;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.OpenApi.Models;
 using ServiceBusMessaging;
+using Serilog;
+using AspNetCoreServiceBusApi2.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreServiceBusApi2;
 
-public class Startup
+internal static class StartupExtensions
 {
-    public Startup(IConfiguration configuration)
+    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        Configuration = configuration;
-    }
+        var services = builder.Services;
+        var configuration = builder.Configuration;
 
-    public IConfiguration Configuration { get; }
-
-    public void ConfigureServices(IServiceCollection services)
-    {
         services.AddControllers();
 
-        var connection = Configuration.GetConnectionString("DefaultConnection");
+        var connection = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<PayloadContext>(options =>
             options.UseSqlite(connection));
@@ -37,11 +35,15 @@ public class Startup
                 Title = "Payload API",
             });
         });
+
+        return builder.Build();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public static WebApplication Configure(this WebApplication app)
     {
-        if (env.IsDevelopment())
+        app.UseSerilogRequestLogging();
+
+        if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
@@ -58,15 +60,14 @@ public class Startup
         app.UseAuthorization();
         app.UseCors();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.MapControllers();
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Payload Management API V1");
         });
+
+        return app;
     }
 }
