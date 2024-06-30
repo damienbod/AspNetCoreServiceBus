@@ -1,6 +1,5 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace FunctionService3;
 
@@ -14,6 +13,6 @@ public static class SubscriptionClientFunction
     {
         log.LogInformation($"C# ServiceBus topic trigger function processed message: {message}");
 
-        var payload = JsonConvert.DeserializeObject<MyPayload>(message);
+        var payload = System.Text.Json.JsonSerializer.Deserialize<MyPayload>(message);
     }
 }
