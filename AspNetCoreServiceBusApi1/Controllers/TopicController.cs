@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AspNetCoreServiceBusApi1.Model;
+﻿using AspNetCoreServiceBusApi1.Model;
 using Microsoft.AspNetCore.Mvc;
 using ServiceBusMessaging;
+using System.ComponentModel.DataAnnotations;
 
 namespace AspNetCoreServiceBusApi1.Controllers;
 
