@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "AspNetCoreServiceBusApi1": {
+    "AspNetCoreServiceBusApi2": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
