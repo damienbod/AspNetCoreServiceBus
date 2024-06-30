@@ -1,19 +1,17 @@
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using ServiceBusMessaging;
-
+using Serilog;
 namespace AspNetCoreServiceBusApi1;
 
-public class Startup
+internal static class StartupExtensions
 {
-    public Startup(IConfiguration configuration)
+    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        Configuration = configuration;
-    }
+        var services = builder.Services;
+        var configuration = builder.Configuration;
 
-    public IConfiguration Configuration { get; }
-
-    public void ConfigureServices(IServiceCollection services)
-    {
         services.AddControllers();
 
         services.AddScoped<ServiceBusSender>();
@@ -27,17 +25,21 @@ public class Startup
                 Title = "Payload View API",
             });
         });
+
+        return builder.Build();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public static WebApplication Configure(this WebApplication app)
     {
-        if (env.IsDevelopment())
+        app.UseSerilogRequestLogging();
+
+        if (app.Environment!.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
         }
         else
         {
-            app.UseHsts();
+            app.UseStatusCodePagesWithReExecute("~/error");
         }
 
         app.UseStaticFiles();
@@ -48,15 +50,14 @@ public class Startup
         app.UseAuthorization();
         app.UseCors();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.MapControllers();
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Payload Management API V1");
         });
+
+        return app;
     }
 }
