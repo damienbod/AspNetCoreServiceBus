@@ -11,7 +11,7 @@ public static class SubscriptionClientFunction
         "functionsubscription",
         Connection = "ServiceBusConnectionString")]string message, ILogger log)
     {
-        log.LogInformation($"C# ServiceBus topic trigger function processed message: {message}");
+        log.LogInformation("C# ServiceBus topic trigger function processed message: {message}", message);
 
         var payload = System.Text.Json.JsonSerializer.Deserialize<MyPayload>(message);
     }
