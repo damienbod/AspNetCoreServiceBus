@@ -8,3 +8,4 @@
 /.vs/AspNetCoreServiceBus/v16/.suo
 /ReducedAccessRightsQueueSender/bin
 /ReducedAccessRightsQueueSender/obj
+/_logs-**
