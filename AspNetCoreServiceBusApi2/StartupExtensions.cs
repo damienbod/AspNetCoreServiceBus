@@ -1,9 +1,9 @@
 
-using Microsoft.OpenApi.Models;
-using ServiceBusMessaging;
-using Serilog;
 using AspNetCoreServiceBusApi2.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using ServiceBusMessaging;
 
 namespace AspNetCoreServiceBusApi2;
 

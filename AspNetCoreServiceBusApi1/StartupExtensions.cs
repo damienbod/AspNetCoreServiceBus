@@ -1,8 +1,6 @@
-
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using ServiceBusMessaging;
 using Serilog;
+using ServiceBusMessaging;
 namespace AspNetCoreServiceBusApi1;
 
 internal static class StartupExtensions
