@@ -1,8 +1,9 @@
 {
   "profiles": {
-    "SubscriptionClientFunction": {
+    "FunctionService3": {
       "commandName": "Project",
-      "commandLineArgs": "host start --useHttps --cert \"server.pfx\" --password \"1111\""
+      "commandLineArgs": "--port 7183",
+      "launchBrowser": false
     }
   }
 }
