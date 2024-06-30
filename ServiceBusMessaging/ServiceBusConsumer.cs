@@ -43,7 +43,7 @@ public class ServiceBusConsumer : IServiceBusConsumer
         _processor = _client.CreateProcessor(QUEUE_NAME, _serviceBusProcessorOptions);
         _processor.ProcessMessageAsync += ProcessMessagesAsync;
         _processor.ProcessErrorAsync += ProcessErrorAsync;
-        await _processor.StartProcessingAsync().ConfigureAwait(false);
+        await _processor.StartProcessingAsync();
     }
 
     private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
@@ -59,25 +59,25 @@ public class ServiceBusConsumer : IServiceBusConsumer
     private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
     {
         var myPayload = args.Message.Body.ToObjectFromJson<MyPayload>();
-        await _processData.Process(myPayload).ConfigureAwait(false);
-        await args.CompleteMessageAsync(args.Message).ConfigureAwait(false);
+        await _processData.Process(myPayload);
+        await args.CompleteMessageAsync(args.Message);
     }
 
     public async ValueTask DisposeAsync()
     {
         if (_processor != null)
         {
-            await _processor.DisposeAsync().ConfigureAwait(false);
+            await _processor.DisposeAsync();
         }
 
         if (_client != null)
         {
-            await _client.DisposeAsync().ConfigureAwait(false);
+            await _client.DisposeAsync();
         }
     }
 
     public async Task CloseQueueAsync()
     {
-        await _processor!.CloseAsync().ConfigureAwait(false);
+        await _processor!.CloseAsync();
     }
 }

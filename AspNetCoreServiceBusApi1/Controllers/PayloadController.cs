@@ -62,7 +62,7 @@ public class PayloadController : Controller
             Goals = request.Goals,
             Name = request.Name,
             Delete = false
-        }).ConfigureAwait(false);
+        });
 
         return Ok(request);
     }
@@ -90,7 +90,7 @@ public class PayloadController : Controller
             Goals = request.Goals,
             Name = request.Name,
             Delete = false
-        }).ConfigureAwait(false);
+        });
 
         return Ok(request);
     }
@@ -123,7 +123,7 @@ public class PayloadController : Controller
             Goals = item.Goals,
             Name = item.Name,
             Delete = true
-        }).ConfigureAwait(false);
+        });
 
         return Ok();
     }

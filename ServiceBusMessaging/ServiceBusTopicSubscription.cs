@@ -42,10 +42,10 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
         _processor.ProcessMessageAsync += ProcessMessagesAsync;
         _processor.ProcessErrorAsync += ProcessErrorAsync;
 
-        await RemoveDefaultFilters().ConfigureAwait(false);
-        await AddFilters().ConfigureAwait(false);
+        await RemoveDefaultFilters();
+        await AddFilters();
 
-        await _processor.StartProcessingAsync().ConfigureAwait(false);
+        await _processor.StartProcessingAsync();
     }
 
     private async Task RemoveDefaultFilters()
@@ -63,8 +63,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
             {
                 if (rule.Name == "GoalsGreaterThanSeven")
                 {
-                    await _adminClient.DeleteRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, "GoalsGreaterThanSeven")
-                        .ConfigureAwait(false);
+                    await _adminClient.DeleteRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, "GoalsGreaterThanSeven");
                 }
             }
         }
@@ -78,8 +77,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     {
         try
         {
-            var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME)
-                .ConfigureAwait(false);
+            var rules = _adminClient.GetRulesAsync(TOPIC_PATH, SUBSCRIPTION_NAME);
 
             var ruleProperties = new List<RuleProperties>();
             await foreach (var rule in rules)
@@ -94,8 +92,7 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
                     Name = "GoalsGreaterThanSeven",
                     Filter = new SqlRuleFilter("goals > 7")
                 };
-                await _adminClient.CreateRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, createRuleOptions)
-                    .ConfigureAwait(false);
+                await _adminClient.CreateRuleAsync(TOPIC_PATH, SUBSCRIPTION_NAME, createRuleOptions);
             }
         }
         catch (Exception ex)
@@ -107,8 +104,8 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     private async Task ProcessMessagesAsync(ProcessMessageEventArgs args)
     {
         var myPayload = args.Message.Body.ToObjectFromJson<MyPayload>();
-        await _processData.Process(myPayload).ConfigureAwait(false);
-        await args.CompleteMessageAsync(args.Message).ConfigureAwait(false);
+        await _processData.Process(myPayload);
+        await args.CompleteMessageAsync(args.Message);
     }
 
     private Task ProcessErrorAsync(ProcessErrorEventArgs arg)
@@ -125,17 +122,17 @@ public class ServiceBusTopicSubscription : IServiceBusTopicSubscription
     {
         if (_processor != null)
         {
-            await _processor.DisposeAsync().ConfigureAwait(false);
+            await _processor.DisposeAsync();
         }
 
         if (_client != null)
         {
-            await _client.DisposeAsync().ConfigureAwait(false);
+            await _client.DisposeAsync();
         }
     }
 
     public async Task CloseSubscriptionAsync()
     {
-        await _processor!.CloseAsync().ConfigureAwait(false);
+        await _processor!.CloseAsync();
     }
 }

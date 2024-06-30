@@ -15,6 +15,6 @@ class Program
 
         //string messagePayload = JsonSerializer.Serialize(payload);
         var message = new ServiceBusMessage("some message from somewhere");
-        await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
+        await _clientSender.SendMessageAsync(message);
     }
 }

@@ -21,6 +21,6 @@ public class ServiceBusSender
     {
         string messagePayload = JsonSerializer.Serialize(payload);
         var message = new ServiceBusMessage(messagePayload);
-        await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
+        await _clientSender.SendMessageAsync(message);
     }
 }

@@ -20,15 +20,15 @@ public class WorkerServiceBus : IHostedService, IDisposable
     public async Task StartAsync(CancellationToken stoppingToken)
     {
         _logger.LogDebug("Starting the service bus queue consumer and the subscription");
-        await _serviceBusConsumer.RegisterOnMessageHandlerAndReceiveMessages().ConfigureAwait(false);
-        await _serviceBusTopicSubscription.PrepareFiltersAndHandleMessages().ConfigureAwait(false);
+        await _serviceBusConsumer.RegisterOnMessageHandlerAndReceiveMessages();
+        await _serviceBusTopicSubscription.PrepareFiltersAndHandleMessages();
     }
 
     public async Task StopAsync(CancellationToken stoppingToken)
     {
         _logger.LogDebug("Stopping the service bus queue consumer and the subscription");
-        await _serviceBusConsumer.CloseQueueAsync().ConfigureAwait(false);
-        await _serviceBusTopicSubscription.CloseSubscriptionAsync().ConfigureAwait(false);
+        await _serviceBusConsumer.CloseQueueAsync();
+        await _serviceBusTopicSubscription.CloseSubscriptionAsync();
     }
 
     public void Dispose()
@@ -41,8 +41,8 @@ public class WorkerServiceBus : IHostedService, IDisposable
     {
         if (disposing)
         {
-            await _serviceBusConsumer.DisposeAsync().ConfigureAwait(false);
-            await _serviceBusTopicSubscription.DisposeAsync().ConfigureAwait(false);
+            await _serviceBusConsumer.DisposeAsync();
+            await _serviceBusTopicSubscription.DisposeAsync();
         }
     }
 }

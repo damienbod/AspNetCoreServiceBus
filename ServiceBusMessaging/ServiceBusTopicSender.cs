@@ -31,7 +31,7 @@ public class ServiceBusTopicSender
 
         try
         {
-            await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
+            await _clientSender.SendMessageAsync(message);
         }
         catch (Exception e)
         {

@@ -23,8 +23,8 @@ public class ProcessData : IProcessData
             Name = myPayload.Name,
             Goals = myPayload.Goals,
             Created = DateTime.UtcNow
-        }).ConfigureAwait(false);
+        });
 
-        await payloadMessageContext.SaveChangesAsync().ConfigureAwait(false);
+        await payloadMessageContext.SaveChangesAsync();
     }
 }
