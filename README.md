@@ -21,6 +21,7 @@ user secrets
 
 ## History
 
+- 2025-11-25 Updated .NET 10
 - 2024-06-30 Updated Azure function .NET 8 isolated v4
 - 2024-06-29 Updated packages
 - 2023-11-24 Updated .NET 8
