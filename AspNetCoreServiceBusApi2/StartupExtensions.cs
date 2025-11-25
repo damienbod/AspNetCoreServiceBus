@@ -1,7 +1,7 @@
 
 using AspNetCoreServiceBusApi2.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Serilog;
 using ServiceBusMessaging;
 
